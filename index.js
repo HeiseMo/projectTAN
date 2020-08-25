@@ -32,10 +32,6 @@ client.on('ready', () => {
   console.log(playerClassTwo.name)
 //  client.user.setActivity('a game', { type: 'PLAYING' })
 });
-//ARGS Managment
-
-
-//---------------
 
 //ADM CMD Clear Chat 99 Msgs
 client.on("message", msg => {
@@ -50,10 +46,10 @@ client.on("message", msg => {
 });
 
 client.on('message', msg => {
-    let role = (msg.member.guild.roles.cache.find(role => role.name === 'New Player'));
-    let member = msg.member;
     let m = msg.content.toLowerCase();
     if (m.startsWith(prefix + 'register')) {
+        let role = (msg.member.guild.roles.cache.find(role => role.name === 'New Player'));
+        let member = msg.member;
             const dUID = msg.author.id;
             Player.find({ discord_id: `${dUID}`}, (err, doesExist) => {
                 if(Object.keys(doesExist).length === 0){
@@ -118,8 +114,10 @@ client.on('message', msg => {
             try{
                 canSave = doesExist[0].location.z
                 if(canSave !== 2){
-                    msg.channel.send("You cannot change your character name after saving.")
-                } else if(canSave === 2){
+                    msg.channel.send("You cannot change your character name after saving your character.")
+                } else if(pName == '' || pName.length < 3){
+                    msg.channel.send(`Your name has to have at least 3 characters and cant be set to empty`)
+                } else if(canSave === 2 && pName !== ""){
                     Player.findOneAndUpdate({ discord_id: `${dUID}`}, {$set: {"playerName": pName} }, (err, doc) => {
                         if (err) {
                             console.log("Something wrong when updating data!");
