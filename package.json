@@ -1,0 +1,25 @@
+{
+  "name": "projecttan",
+  "version": "0.0.1",
+  "description": "Discord Bot Game",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^12.3.1",
+    "dotenv": "^8.2.0",
+    "mongoose": "^5.10.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HeiseMo/projectTAN.git"
+  },
+  "author": "Timur James Tanurhan, Daniel Can Tanurhan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HeiseMo/projectTAN/issues"
+  },
+  "homepage": "https://github.com/HeiseMo/projectTAN#readme"
+}
