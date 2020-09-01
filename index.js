@@ -25,7 +25,7 @@ mongoose
 const client = new Discord.Client({
 });
 
-let prefix = "$";
+let prefix = "!";
 
 client.on('ready', () => {
   console.log('I am ready!');
@@ -45,11 +45,31 @@ client.on("message", msg => {
     }
 });
 
+client.on('message', msg =>{
+    let m = msg.content.toLowerCase();
+    if(m.startsWith(prefix + 'createchannel')){
+        let everyone = (msg.member.guild.roles.cache.find(role => role.name === '@everyone'));
+        let name = msg.author.username + ' Play Area'
+        let welcome = `<@${msg.author.id}> You have created your channel, you can delete it by using the $deletechannel on the channel you would like to delete.`;
+        msg.channel.send(welcome)
+            msg.guild.channels.create(name, {
+            permissionOverwrites: [
+                {
+                id: everyone.id,
+                deny: 'VIEW_CHANNEL'
+                }, {
+                id: msg.author.id,
+                allow: 'VIEW_CHANNEL'
+                }
+            ]
+            }).catch(err => console.error(err));
+    }
+})
+
 client.on('message', msg => {
     let m = msg.content.toLowerCase();
     if (m.startsWith(prefix + 'register')) {
         let role = (msg.member.guild.roles.cache.find(role => role.name === 'New Player'));
-        let member = msg.member;
             const dUID = msg.author.id;
             Player.find({ discord_id: `${dUID}`}, (err, doesExist) => {
                 if(Object.keys(doesExist).length === 0){
@@ -69,24 +89,6 @@ client.on('message', msg => {
                     Accounts.save()
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
-                    member.roles.add(role);
-                    let everyone = (msg.member.guild.roles.cache.find(role => role.name === '@everyone'));
-                    let name = msg.author.username + ' Play Area'
-                    let welcome = `<@${msg.author.id}> You have registered. To set up your character head to the getting-started channel.`;
-                    console.log(welcome)
-                    msg.channel.send(welcome)
-                        msg.guild.channels.create(name, {
-                        permissionOverwrites: [
-                            {
-                            id: everyone.id,
-                            deny: 'VIEW_CHANNEL'
-                            }, {
-                            id: msg.author.id,
-                            allow: 'VIEW_CHANNEL'
-                            }
-                        ]
-                        }).catch(err => console.error(err));
-
                 } else if(doesExist[0].discord_id === dUID){
                     msg.reply("You already have an account!")
                 }
@@ -172,7 +174,7 @@ client.on('message', msg => {
      }
   })
 
-//Save Player
+//Save Player name and class
 
 client.on('message', msg => {
     let m = msg.content.toLowerCase();
@@ -188,6 +190,37 @@ client.on('message', msg => {
         };
     });
 
+function encounterHardnessSelector(a,b){
+    if(a < 100 && a >= 50 || b < 100 && b >= 50){
+        let c = 2
+        return c
+    }
+    else if(a < 50 && a >= 0 || b < 50 && b >= 0){
+        let c = 1
+        return c
+    } 
+}
+
+function encounter (hardnessSelector) {
+    let rng = Math.random();
+    if(hardnessSelector == 1){
+        if (rng < 0.3){
+            return "You have encountered an enemy"
+        } else {
+            return "You havent encountered anything on your travels."
+        }
+    }
+    if(hardnessSelector == 2){
+        if (rng < 0.5){
+            return "You have encountered an enemy"
+        } else {
+            return "You havent encountered anything on your travels."
+        }
+    }
+
+
+}
+
 //Movement
 client.on('message', msg => {
     let m = msg.content.toLowerCase();
@@ -197,8 +230,12 @@ client.on('message', msg => {
                 if (err) {
                     console.log("Something wrong when updating data!");
                 }
-                console.log(doc);
-                msg.channel.send("You went north")
+                let currentX = doc.location['x'];
+                let currentY = doc.location['y'];
+                let encounterHS = encounterHardnessSelector(currentX,currentY)
+                let encounterSelector = encounter(encounterHS)
+                msg.channel.send(encounterSelector)
+                msg.channel.send(`You went north. You are currently at Location(X: ${currentX}, Y: ${currentY})`)
             });
         }
         /*msg.channel.type == "dm"*/
@@ -208,8 +245,12 @@ client.on('message', msg => {
                 if (err) {
                     console.log("Something wrong when updating data!");
                 }
-                console.log(doc);
-                msg.channel.send("You went south")
+                let currentX = doc.location['x'];
+                let currentY = doc.location['y'];
+                let encounterHS = encounterHardnessSelector(currentX,currentY)
+                let encounterSelector = encounter(encounterHS)
+                msg.channel.send(encounterSelector)
+                msg.channel.send(`You went south. You are currently at Location(X: ${currentX}, Y: ${currentY})`)
             });
         }
         if(m.startsWith(prefix + 'west')) {
@@ -218,8 +259,12 @@ client.on('message', msg => {
                 if (err) {
                     console.log("Something wrong when updating data!");
                 }
-                console.log(doc);
-                msg.channel.send("You went west")
+                let currentX = doc.location['x'];
+                let currentY = doc.location['y'];
+                let encounterHS = encounterHardnessSelector(currentX,currentY)
+                let encounterSelector = encounter(encounterHS)
+                msg.channel.send(encounterSelector)
+                msg.channel.send(`You went West. You are currently at Location(X: ${currentX}, Y: ${currentY})`)
             });
         }
         if(m.startsWith(prefix + 'east')) {
@@ -228,8 +273,12 @@ client.on('message', msg => {
                 if (err) {
                     console.log("Something wrong when updating data!");
                 }
-                console.log(doc);
-                msg.channel.send("You went east")
+                let currentX = doc.location['x'];
+                let currentY = doc.location['y'];
+                let encounterHS = encounterHardnessSelector(currentX,currentY)
+                let encounterSelector = encounter(encounterHS)
+                msg.channel.send(encounterSelector)
+                msg.channel.send(`You went East. You are currently at Location(X: ${currentX}, Y: ${currentY})`)
             });
         }    
  

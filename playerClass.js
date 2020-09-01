@@ -15,6 +15,7 @@ const classTwo = {
     power: 14,
     defence: 7
 }
+
 const classThree = {
     id: 3,
     name: "water",
@@ -23,6 +24,7 @@ const classThree = {
     power: 12,
     defence: 11
 }
+
 const classFour = {
     id: 4,
     name: "earth",
